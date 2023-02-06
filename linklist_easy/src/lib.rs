@@ -85,3 +85,53 @@ impl Solution {
     }
 }
 
+impl Solution {
+    /* 删除节点
+    输入: head = [4,5,1,9], val = 5
+    输出: [4,1,9]
+    */
+    fn delete_node(head: Option<Box<ListNode>>, val: i32) -> Option<Box<ListNode>> {
+        let mut head = Some(Box::new(ListNode { val: 5, next: head }));
+        let mut root = &mut head;
+        while let Some(node) = root {
+            let next_node = &mut node.next;
+            match next_node {
+            None => break,
+            Some(next_node) => {
+                if next_node.val == val {
+                    // 当前节点的下一个节点等于目标节点
+                    node.next = next_node.next.take();
+                    break;
+                    }
+                }
+            }
+            root = &mut node.next;
+        }
+        head.unwrap().next
+    }
+}
+
+impl Solution {
+    /* 删除排序链表中重复的元素
+    输入：head = [1,1,2]
+    输出：[1,2]
+    */
+    pub fn delete_duplicates(mut head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
+        if head.is_none() || head.as_ref()?.next.is_none() {
+            return head;
+        }
+        let mut root = &mut head;
+
+        while root.is_some() && root.as_mut()?.next.is_some() {
+            let mut node = root.as_mut().unwrap();
+            let next_node = &mut node.next;
+            if next_node.as_ref()?.val == node.val {
+                node.next = next_node.as_mut()?.next.take();
+            } else {
+                root = &mut root.as_mut()?.next;
+            }
+        }
+        head
+    }
+}
+
