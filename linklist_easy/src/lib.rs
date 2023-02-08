@@ -4,6 +4,16 @@ as_ref 取Option中值的不可变引用，Option<T>变为Option<&T>
 as_mut 取Option中值的可变引用，Option<T>变为Option<&mut T>
 xxx.as_mut().unwrap()：用得多的情况，先变为引用，再取出引用的值
 take：先取出其中的值，再留下一个 None 值
+
+可以修改a的值(因为a是可变的)，而不能对a引用的值进行修改
+let mut a = &Foo(2);
+a = &Foo(5);  // ok
+a.0 = 7;      // [E0594]: cannot assign to `a.0` which is behind a `&` reference
+
+不可以修改b的值，但可以对b引用的值进行修改
+let b = &mut Foo(42);
+b = &Foo(36); // [E0384]: cannot assign twice to immutable variable `b`
+b.0 = 100;    // ok
 */
 #[derive(Debug, PartialEq, Clone, Eq)]
 pub struct ListNode{
