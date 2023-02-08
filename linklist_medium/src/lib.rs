@@ -79,3 +79,46 @@ impl Solution {
         result.next
       }
     }
+
+
+impl Solution {
+    pub fn remove_nth_from_end(mut head: Option<Box<ListNode>>, n: i32) -> Option<Box<ListNode>> {
+        /*删除链表的倒数第N个节点
+        输入：head = [1,2,3,4,5], n = 2
+        输出：[1,2,3,5]
+        */
+        if head.is_none(){
+            return head;
+        }
+        let mut slow = &head;
+        let mut fast = &head;
+        let mut i = 1;
+        while i < n {
+            // 快指针先走n步
+            fast = &fast.as_ref().unwrap().next;
+            i += 1;
+          }
+        while fast.as_ref().unwrap().next.is_some() {
+            fast = &fast.as_ref().unwrap().next;
+            slow = &slow.as_ref().unwrap().next;
+        }
+          // 这里必须clone一下因为head已经borrow了，没办法再move
+        head = delete_node(head.clone(), slow);
+        head
+    }
+}
+
+fn delete_node(head: Option<Box<ListNode>>, target: &Option<Box<ListNode>>) -> Option<Box<ListNode>>{
+    let mut phead = Some(Box::new(ListNode { val: 1, next: head }));
+    let mut root = &mut phead;
+    while root.as_mut().unwrap().next.is_some() {
+        if &root.as_mut().unwrap().next == target {
+            let target_next = &target.as_ref().unwrap().next;
+            root.as_mut().unwrap().next = target_next.clone();
+            break;
+        }
+        root = &mut root.as_mut().unwrap().next;
+    }
+    phead
+}
+  
