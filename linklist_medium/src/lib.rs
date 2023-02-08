@@ -1,3 +1,6 @@
+use std::collections::HashMap;
+
+
 #[derive(Debug, PartialEq, Clone, Eq)]
 pub struct ListNode{
     pub val: i32,
@@ -121,4 +124,74 @@ fn delete_node(head: Option<Box<ListNode>>, target: &Option<Box<ListNode>>) -> O
     }
     phead
 }
-  
+
+impl Solution {
+    /* 旋转链表
+    一个链表的头节点 head ，旋转链表，将链表每个节点向右移动 k 个位置。
+    输入：head = [1,2,3,4,5], k = 2
+    输出：[4,5,1,2,3]
+    */
+    pub fn rotate(mut head: Option<Box<ListNode>>, k: i32) -> Option<Box<ListNode>> {
+        if head.is_none() {
+            return head;
+        }
+        // rust 链表无法成环，拆成两个链表再连接
+        let mut len = 0;
+        let mut head_refer  = &head;
+        // 记录长度
+        while head_refer.as_ref().is_some() {
+            len += 1;
+            head_refer = &head_refer.as_ref().unwrap().next;
+        }
+        let mut k = (len - k) % len;
+        if k==0 {
+            return head;
+        }
+        let mut head_mut_refer = &mut head;
+        while k>0 {
+            k -= 1;
+            head_mut_refer = &mut head_mut_refer.as_mut().unwrap().next;
+        }
+        // right = 4->5  head = 1->2->3
+        let mut right = head_mut_refer.as_mut().unwrap().next.take();
+        let mut right_mut_ref = &mut right;
+        while right_mut_ref.as_mut().unwrap().next.is_some(){
+            right_mut_ref = &mut right_mut_ref.as_mut().unwrap().next;
+        }
+        right_mut_ref.as_mut().unwrap().next = head;
+        right 
+    }
+}
+
+impl Solution {
+    /*从链表中删去总和值为零的连续节点
+    输入：head = [1,2,-3,3,1]
+    输出：[3,1]
+    答案 [1,2,1] 也是正确的。
+    */
+    pub fn remove_zero_sum_sublists(mut head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
+        if head.is_none(){ return head; }
+        let phead = Some(Box::new(ListNode { val: 0, next: head }));
+        let mut hash_map = HashMap::new();
+        let mut head_clone = phead.clone();
+        let mut head_refer = &phead;
+        let mut sum = 0;
+
+        while head_refer.is_some() {
+            sum = sum + &head_refer.as_ref().unwrap().val;
+            hash_map.insert(sum, head_refer.clone());
+            head_refer = &head_refer.as_ref().unwrap().next;
+        }
+        let mut head_refer = &mut head_clone;
+        sum = 0;
+        while head_refer.is_some() {
+          sum += &head_refer.as_mut()?.val;
+          if sum == 0{
+            let node = hash_map.get_mut(&sum).unwrap();
+            head_refer.as_mut().unwrap().next = node.as_mut().unwrap().next.take();
+            head_refer = &mut head_refer.as_mut().unwrap().next;
+          }
+        }
+        head_clone?.next
+    }
+}
