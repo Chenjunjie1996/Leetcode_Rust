@@ -195,3 +195,38 @@ impl Solution {
         head_clone?.next
     }
 }
+
+impl Solution {
+    /* 链表中的下一个更大节点
+    输入：head = [2,1,5]
+    输出：[5,5,0]
+    输入：head = [2,7,4,3,5]
+    输出：[7,0,5,5,0]
+    */
+    // 单调栈
+    pub fn next_larger_nodes(head: Option<Box<ListNode>>) -> Vec<i32> {
+        if head.is_none() {
+          return vec![];
+        }
+        let mut arr = vec![]; // 存储链表中的元素
+        let mut stack = vec![]; // 存储 arr 的元素下标
+        let mut head_refer = &head;
+        while head_refer.is_some() {
+          arr.push(head_refer.as_ref().unwrap().val);
+          head_refer = &head_refer.as_ref().unwrap().next;
+        }
+        let mut v = vec![0; arr.len()];
+        stack.push(0);
+        for i in 0..arr.len() {
+          while arr[i] > arr[*stack.last().unwrap() as usize] {
+            v[*stack.last().unwrap() as usize] = arr[i];
+            stack.pop();
+            if stack.len() == 0 {
+              break;
+            }
+          }
+          stack.push(i as i32);
+        }
+        v
+      }
+}
