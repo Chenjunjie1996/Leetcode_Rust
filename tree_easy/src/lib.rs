@@ -37,33 +37,56 @@ impl TreeNode {
   }
 }
 
-pub fn preorder_traversal(mut root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
-    /* 前序遍历 首先访问根结点，然后前序遍历其左子树，最后前序遍历其右子树。
-    输入: [1,null,2,3]
-    1
-     \
-      2
-     /
-    3
-    输出: [1,2,3]
-    */
-    let mut v = vec![];
-    if root.is_none(){return v;}
-    let mut stack = vec![];
-    while stack.len() != 0 || !root.is_none() {
-        while !root.is_none() {
-            // 一直添加左子树直到为空
-            let node = root.unwrap();
-            v.push(node.borrow().val);
-            root = node.borrow_mut().left.take();
-            stack.push(node);
-        }
-        // 从栈中弹出，取节点的右子树
-        root = stack.pop();
-        root = root.unwrap().borrow_mut().right.take();
+/*
+        1
+       / \
+      2   3
+     /\  /\
+    4 5 6 7  
+如果你按照 根节点 -> 左孩子 -> 右孩子 的方式遍历，即「先序遍历」，每次先遍历根节点，遍历结果为 1 2 4 5 3 6 7；
+
+同理，如果你按照 左孩子 -> 根节点 -> 右孩子 的方式遍历，即「中序序遍历」，遍历结果为 4 2 5 1 6 3 7；
+
+如果你按照 左孩子 -> 右孩子 -> 根节点 的方式遍历，即「后序序遍历」，遍历结果为 4 5 2 6 7 3 1；
+
+最后，层次遍历就是按照每一层从左向右的方式进行遍历，遍历结果为 1 2 3 4 5 6 7。
+
+*/
+struct Solution{}
+
+impl Solution {
+    // 迭代法
+    pub fn preorder_traversal(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
+        let mut ans = vec![];
+        let mut stack = vec![];
+        let mut node = root;
+        while stack.len()>0 || 
     }
-    v
+
+    // 递归法
+    pub fn preorder_traversal_recursion(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
+        Self::traverse(&root)
+    }
+
+    pub fn traverse(root: &Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
+        if let Some(r) = root {
+            let mut vec = vec![r.borrow().val];
+            let mut vec_left = Self::traverse(&r.borrow().left);
+            let mut vec_right = Self::traverse(&r.borrow().right);
+            vec.append(&mut vec_left);
+            vec.append(&mut vec_right);
+            vec  
+        } else {
+            vec![]
+        }
+    }
 }
+
+
+impl Solution {
+    
+}
+
 
 pub fn inorder_traversal(mut root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
     /* 中序遍历 首先中序遍历根结点的左子树，然后访问根结点，最后中序遍历其右子树。
