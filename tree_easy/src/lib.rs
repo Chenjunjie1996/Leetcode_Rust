@@ -60,7 +60,18 @@ impl Solution {
         let mut ans = vec![];
         let mut stack = vec![];
         let mut node = root;
-        while stack.len()>0 || 
+        while node.is_some() || stack.len()>0 {
+            while let Some(n) = node {
+                ans.push(n.borrow().val);
+                node = n.borrow_mut().left.take();
+                stack.push(n);
+            }
+
+            if let Some(n) = stack.pop() {
+                node = n.borrow_mut().right.take();
+            }
+        }
+        ans
     }
 
     // 递归法
