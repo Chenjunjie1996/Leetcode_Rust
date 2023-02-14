@@ -76,14 +76,14 @@ impl Solution {
 
     // 递归法
     pub fn preorder_traversal_recursion(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
-        Self::traverse(&root)
+        Self::traverse_preorder(&root)
     }
 
-    pub fn traverse(root: &Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
+    pub fn traverse_preorder(root: &Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
         if let Some(r) = root {
             let mut vec = vec![r.borrow().val];
-            let mut vec_left = Self::traverse(&r.borrow().left);
-            let mut vec_right = Self::traverse(&r.borrow().right);
+            let mut vec_left = Self::traverse_preorder(&r.borrow().left);
+            let mut vec_right = Self::traverse_preorder(&r.borrow().right);
             vec.append(&mut vec_left);
             vec.append(&mut vec_right);
             vec  
@@ -95,7 +95,38 @@ impl Solution {
 
 
 impl Solution {
-    
+    pub fn inorder_traversal_recursion(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
+        Self::traverse_inorder(&root)
+    }
+    pub fn traverse_inorder(root: &Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
+        let ans = vec![];
+        if let Some(r) = root {
+            let mut ans_left = Self::traverse_inorder(&r.borrow_mut().left.take());
+            let mut ans_right = Self::traverse_inorder(&r.borrow_mut().right.take());
+            ans.append(&mut ans_left);
+            ans.push(r.borrow().val);
+            ans.append(&mut ans_right);
+        }
+        ans
+    }
+
+    pub fn inorder_traversal(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
+        let mut ans = vec![];
+        let mut stack = vec![];
+        let mut node = root;
+
+        while node.is_some() || stack.len()>0 {
+            while let Some(n) = node {
+                node = n.borrow_mut().left.take();
+                stack.push(n);
+            }
+            if let Some(n) = stack.pop(){
+                ans.push(n.borrow().val);
+                node = n.borrow_mut().right.take();
+            }
+        }
+        ans
+    }
 }
 
 
