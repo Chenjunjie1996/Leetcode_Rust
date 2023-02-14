@@ -130,26 +130,31 @@ impl Solution {
 }
 
 
-pub fn inorder_traversal(mut root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
-    /* 中序遍历 首先中序遍历根结点的左子树，然后访问根结点，最后中序遍历其右子树。
-    */
-    let mut v = vec![];
-    if root.is_none(){return v;}
-    let mut stack = vec![];
-    while stack.len() != 0 || !root.is_none() {
-        while !root.is_none() {
-            // 一直添加左子树直到为空
-            let node = root.unwrap();
-            root = node.borrow_mut().left.take();
-            stack.push(node);
-        }
-        // 从栈中弹出，取节点的右子树
-        root = stack.pop();
-        v.push(root.as_mut().unwrap().borrow().val);
-        root = root.unwrap().borrow_mut().right.take();
+impl Solution {
+    pub fn postorder_traversal_recursion(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
+        Self::traverse_postorder(&root)
     }
-    v
+
+    pub fn traverse_postorder(root: &Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
+        let mut ans = vec![];
+
+        if let Some(r) = root {
+            let mut ans_left = Self::traverse_postorder(&r.borrow().left);
+            let mut ans_right = Self::traverse_postorder(&r.borrow().right);
+
+            ans.append(&mut ans_left);
+            ans.append(&mut ans_right);
+            ans.push(r.borrow().val);
+        }
+        ans
+    }
+
+    pub fn postorder_traversal(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
+
+    }
 }
+
+
 
 pub fn postorder_traversal(mut root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
     /*首先后序遍历根结点的左子树，然后后序遍历根结点的右子树，最后访问根结点。
