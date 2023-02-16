@@ -150,31 +150,32 @@ impl Solution {
     }
 
     pub fn postorder_traversal(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
+        let mut ans = vec![];
+        let mut stack = vec![];
+        let mut node = root;
+        let mut prev = None;
 
+        while node.is_some() || stack.len() > 0 {
+            while let Some(n) = node {
+                node = n.borrow_mut().left.take();
+                stack.push(n);
+            }
+
+            if let Some(n) = stack.pop() {
+                if n.borrow().right.is_none() || n.borrow().right == prev {
+                    ans.push(n.borrow().val);
+                    prev = Some(n);
+                    node = None;
+                } else {
+                    node = n.borrow().right.take();
+                    stack.push(n);
+                }
+            }
+        }
+        ans
     }
 }
 
-
-
-pub fn postorder_traversal(mut root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
-    /*首先后序遍历根结点的左子树，然后后序遍历根结点的右子树，最后访问根结点。
-    输入: [1,null,2,3]
-       1
-        \
-         2
-        /
-       3
-    输出: [3,2,1]
-    */
-    let mut v = vec![];
-    let mut queue = VecDeque::new();
-    if root.is_none(){return v;}
-    let mut stack = vec![root];
-    while stack.len() != 0 {
-        let mut node = stack.pop().unwrap().unwrap(); // stack.pop返回option所以这里需要执行两次unwrap
-    }
-
-}
 
 pub fn level_order_bottom(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<Vec<i32>> {
     /* 二叉树层次遍历
