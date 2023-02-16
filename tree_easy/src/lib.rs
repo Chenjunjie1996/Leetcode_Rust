@@ -99,7 +99,7 @@ impl Solution {
         Self::traverse_inorder(&root)
     }
     pub fn traverse_inorder(root: &Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
-        let ans = vec![];
+        let mut ans = vec![];
         if let Some(r) = root {
             let mut ans_left = Self::traverse_inorder(&r.borrow_mut().left.take());
             let mut ans_right = Self::traverse_inorder(&r.borrow_mut().right.take());
@@ -167,7 +167,7 @@ impl Solution {
                     prev = Some(n);
                     node = None;
                 } else {
-                    node = n.borrow().right.take();
+                    node = n.borrow_mut().right.take();
                     stack.push(n);
                 }
             }
@@ -187,37 +187,26 @@ pub fn level_order_bottom(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<Vec<i32>> 
     //    3
     输出: [1,3,2]
     */
-    let mut v = vec![];
-    if root.is_none() {
-      return v;
+    let mut ans = Vec::new();
+    let mut stack = Vec::new();
+    if root.is_none(){
+        return ans;
     }
-    let mut queue = VecDeque::new();
-    queue.push_front(root);
-    while queue.len() != 0 {
-      let mut node_vec = vec![];
-      let mut val_vec = vec![];
-      while queue.len() != 0 {
-        let node = queue.pop_front().unwrap().unwrap();
-        val_vec.push(node.borrow().val); // 记录当前行的所有元素的val
-        node_vec.push(node); // 将当前队列中的所有元素出队并保存，即当前行的所有元素
-      }
-      v.push(val_vec);
-      for i in &node_vec {
-        // 把当前行所有元素的下一行元素入队
-        let node = i;
-        if !node.borrow().left.is_none() {
-          queue.push_back(node.borrow_mut().left.take());
+    stack.push(root.unwrap());
+    while stack.is_empty()!= true{
+        let num = stack.len();
+        let mut level = Vec::new();
+        for _i in 0..num{
+            let tmp = stack.remove(0);
+            level.push(tmp.borrow_mut().val);
+            if tmp.borrow_mut().left.is_some(){
+                stack.push(tmp.borrow_mut().left.take().unwrap());
+            }
+            if tmp.borrow_mut().right.is_some(){
+                stack.push(tmp.borrow_mut().right.take().unwrap());
+            }
         }
-        if !node.borrow().right.is_none() {
-          queue.push_back(node.borrow_mut().right.take());
-        }
-      }
+        ans.push(level);
     }
-    let mut i = 0;
-    let mut res = vec![];
-    while i < v.len() {
-      res.push(v[v.len() - i - 1].clone());
-      i += 1;
-    }
-    res
-  }
+    ans
+}
