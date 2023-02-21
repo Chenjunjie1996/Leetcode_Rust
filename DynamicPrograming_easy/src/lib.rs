@@ -1,3 +1,5 @@
+use std::{cmp::max, ops::Range};
+
 struct Solution {}
 
 impl Solution {
@@ -42,7 +44,16 @@ impl Solution {
         dp[nsize-1]
     }
 
-    pub fn max_sub_array(n: Vec<i32>) -> i32 {
-        1
+    pub fn max_sub_array(mut nums: Vec<u32>) -> u32 {
+        /* 连续数列
+        输入： [-2,1,-3,4,-1,2,1,-5,4]
+        输出： 6
+        解释： 连续子数组 [4,-1,2,1] 的和最大，为 6。
+        */
+
+        for i in 1..nums.len() {
+            nums[i] += max(nums[i-1], 0)
+        }
+        *nums.iter().max().unwrap()
     }
 }
