@@ -84,4 +84,36 @@ impl Solution {
           }
           res
     }
+
+    pub fn rob(nums: Vec<i32>) -> i32 {
+        /* 打家劫舍
+        输入：[2,7,9,3,1]
+        输出：12
+        解释：偷窃 1 号房屋 (金额 = 2), 偷窃 3 号房屋 (金额 = 9)，接着偷窃 5 号房屋 (金额 = 1)。
+        偷窃到的最高金额 = 2 + 9 + 1 = 12 。
+
+        状态转移方程：dp[i]=max(dp[i−2]+nums[i],dp[i−1])  
+        1. 偷i不偷i-1，dp[i] = dp[i-2]+nums[i]
+        2. 不偷i dp[i] = dp[i-1]
+        dp[i] 表示前 i 间房屋能偷窃到的最高总金额
+        边界条件：
+        dp[0] = nums[0]
+        dp[1] = max(nums[0], nums[1])
+        答案为：dp[nums.len()-1]
+        */
+        let len = nums.len();
+        if len == 0 {
+            return 0;
+        }
+        if len == 1 {
+            return nums[0].max(nums[1]);
+        }
+        let mut dp = vec![0, nums[0]];
+        dp[0] = nums[0];
+        dp[1] = nums[0].max(nums[1]);
+        for i in 2..len {
+            dp[i] = (dp[i-2] + nums[i]).max(dp[i-1])
+        }
+        dp[len-1]
+    }
 }
