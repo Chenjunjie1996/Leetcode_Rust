@@ -28,6 +28,33 @@ impl Solution {
         }
         res
     }
+
+    pub fn find_number_of_lis(nums: Vec<i32>) -> i32 {
+        /*给定一个未排序的整数数组 nums ， 返回最长递增子序列的个数 。
+        输入: [1,3,5,4,7]
+        输出: 2
+        解释: 有两个最长递增子序列，分别是 [1, 3, 4, 7] 和[1, 3, 5, 7]。
+        */
+        // 动态规划+回溯倒推路径
+        if nums.len() <= 1 {
+            return nums.len() as i32;
+        }
+        let mut dp = vec![1; nums.len()];
+        let mut path = vec![];
+        let mut max_len = 0;
+        for i in 1..nums.len() {
+            for j in 0..i {
+              if nums[i] > nums[j] {
+                dp[i] = max(dp[i], dp[j] + 1)
+              }
+            }
+            max_len = max(dp[i], max_len);
+        }
+        if max_len == 1 {
+            return dp.len() as i32;
+        }
+        
+    }
 }
 
 
