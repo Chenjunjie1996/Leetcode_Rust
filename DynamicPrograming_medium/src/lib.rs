@@ -34,26 +34,35 @@ impl Solution {
         输入: [1,3,5,4,7]
         输出: 2
         解释: 有两个最长递增子序列，分别是 [1, 3, 4, 7] 和[1, 3, 5, 7]。
+        状态转移方程： dp[i]=max(dp[j])+1,其中0≤j<i且num[j]<num[i]
         */
-        // 动态规划+回溯倒推路径
-        if nums.len() <= 1 {
-            return nums.len() as i32;
-        }
-        let mut dp = vec![1; nums.len()];
-        let mut path = vec![];
-        let mut max_len = 0;
-        for i in 1..nums.len() {
+        let n = nums.len();
+        let mut max = -1; // nums的最长上升子序列的长度
+        let mut dp = vec![1;n]; // 以nums[i]结尾的最长上升子序列的长度
+        let mut count = vec![1;n]; // 以nums[i]结尾的最长上升子序列的个数
+        // 答案为所有满足dp[i]=max的i所对应的count[i]之和
+        for i in 0..n {
             for j in 0..i {
-              if nums[i] > nums[j] {
-                dp[i] = max(dp[i], dp[j] + 1)
-              }
+                if nums[i] > nums[j] {
+                    if dp[i] < dp[j] + 1 {
+                        dp[i] = dp[j] + 1;
+                        count[i] = count[j];
+                    } else if dp[i] == dp[j] + 1 {
+                        count[i] += count[j];
+                    }
+                }
             }
-            max_len = max(dp[i], max_len);
+            if max < dp[i] {
+                max = dp[i]
+            }
         }
-        if max_len == 1 {
-            return dp.len() as i32;
+        let mut res = 0;
+        for i in 0..n {
+            if dp[i] == max {
+                res += count[i];
+            }
         }
-        
+        res
     }
 }
 
