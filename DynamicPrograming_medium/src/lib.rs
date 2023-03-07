@@ -1,4 +1,5 @@
 use std::cmp::max;
+use std::cmp::min;
 
 struct Solution{}
 
@@ -63,6 +64,34 @@ impl Solution {
             }
         }
         res
+    }
+
+    pub fn min_path_sum(grid: Vec<Vec<i32>>) -> i32 {
+        // 输入：grid = [[1,3,1],[1,5,1],[4,2,1]]
+        // 输出：7
+        // 解释：路径 1→3→1→1→1 的总和最小。
+        let m = grid.len();
+        let n = grid[0].len();
+        let mut dp = vec![vec![1; n]; m]; // dp代表到m*n坐标时候的最小路径和
+        dp[0][0] = grid[0][0];
+
+        for i in 1..m{
+            dp[i][0] = grid[i][0] + dp[i-1][0]
+        }
+        for j in 1..n {
+            dp[0][j] = grid[0][j] + dp[0][j-1]
+        }
+        for i in 1..m {
+            for j in 1..n {
+                dp[i][j] = min(dp[i-1][j], dp[i][j-1]) + grid[i][j]
+            }
+        }
+        println!("{:?}", dp);
+        dp[m-1][n-1]
+    }
+
+    pub fn longest_palindrome(s: String) -> String {
+        "s".to_string()
     }
 }
 
