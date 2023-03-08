@@ -167,6 +167,52 @@ impl Solution {
         }
         dp[len-1]
     }
+
+    pub fn unique_paths(m:i32, n:i32) -> i32 {
+        let m = m as usize;
+        let n = n as usize;
+        let mut dp = vec![vec![0;n];m];
+        for i in 0..m {
+            dp[i][0] = 1;
+        }
+        for j in 0..n {
+            dp[0][j] = 1;
+        }
+        for i in 1..m {
+            for j in 1..n {
+                dp[i][j] = dp[i-1][j] + dp[i][j-1];
+            }
+        }
+        dp[m-1][n-1]
+    }
+
+    pub fn unique_paths_with_obstacles(obstacle_grid: Vec<Vec<i32>>) -> i32 {
+        if obstacle_grid[0][0] == 0 {return 0;}
+        let m = obstacle_grid.len();
+        let n = obstacle_grid[0].len();
+        let mut dp = vec![vec![0; n]; m];
+        for i in 0..m {
+            if obstacle_grid[i][0] == 0 {
+                dp[i][0] = 1;
+            } else {
+                break;
+            }
+        }
+        for j in 0..n {
+            if obstacle_grid[0][j] == 0 {
+                dp[0][j] = 1;
+            } else {
+                break;
+            }
+        }
+        for i in 1..m {
+            for j in 1..n {
+                dp[i][j] = if obstacle_grid[i][j] == 0 {dp[i-1][j] + dp[i][j-1]} else {0};
+            }
+        }
+        dp[m-1][n-1]
+    }
+
 }
 
 
