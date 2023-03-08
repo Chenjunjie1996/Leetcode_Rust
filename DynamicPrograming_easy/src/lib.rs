@@ -108,7 +108,7 @@ impl Solution {
         if len == 1 {
             return nums[0].max(nums[1]);
         }
-        let mut dp = vec![0, nums[0]];
+        let mut dp = vec![0; len];
         dp[0] = nums[0];
         dp[1] = nums[0].max(nums[1]);
         for i in 2..len {

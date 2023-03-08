@@ -144,6 +144,29 @@ impl Solution {
         println!("{:?}", res);
         res.to_string()
     }
+
+    pub fn rob2(nums: Vec<i32>) -> i32 {
+        let len = nums.len();
+        if len == 0 {return 0;}
+        if len == 1 {return nums[0];}
+        // 只需单独处理第一个和最后一个房屋，中间的房屋仍然和打家劫舍1一样处理
+        return max(
+            Self::sub_rob2(nums[0..=len-2].to_vec()),
+            Self::sub_rob2(nums[1..=len-1].to_vec()),
+        )
+    }
+    fn sub_rob2(nums: Vec<i32>) -> i32 {
+        let len = nums.len();
+        if len == 0 {return 0;}
+        if len == 1 {return nums[0];}
+        let mut dp = vec![0; len];
+        dp[0] = nums[0];
+        dp[1] = max(nums[0], nums[1]);
+        for i in 2..len {
+            dp[i] = max(dp[i-2] + nums[i-1], dp[i-1])
+        }
+        dp[len-1]
+    }
 }
 
 

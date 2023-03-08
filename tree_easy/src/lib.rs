@@ -17,6 +17,7 @@ println!("{}",cell.borrow()) // 11
 use std::cell::RefCell;
 use std::collections::VecDeque;
 use std::rc::Rc;
+use std::cmp::max;
 
 //Definition for a binary tree node.
 #[derive(Debug, PartialEq, Eq)]
@@ -209,4 +210,27 @@ pub fn level_order_bottom(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<Vec<i32>> 
         ans.push(level);
     }
     ans
+}
+
+impl Solution {
+    // 打家劫舍3
+    pub fn rob(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
+        let (selected, skipped) = Self::dfs(&root);
+
+        selected.max(skipped)
+    }
+
+    fn dfs(root: &Option<Rc<RefCell<TreeNode>>>) -> (i32, i32) {
+        if let Some(r) = root {
+            let (left_selected, left_skipped) = Self::dfs(&r.borrow().left);
+            let (right_selected, right_skipped) = Self::dfs(&r.borrow().right);
+
+            let selected = r.borrow().val + left_skipped + right_skipped;
+            let skipped = left_selected.max(left_skipped) + right_selected.max(right_skipped);
+
+            (selected, skipped)
+        } else {
+            (0, 0)
+        }
+    }
 }
