@@ -1,6 +1,17 @@
 use std::cmp::max;
 use std::cmp::min;
 
+pub fn valid_palindromic(s: String, mut left: usize, mut right: usize) -> bool {
+    while left < right {
+        if &s[left..left+1] != &s[right..right+1] {
+            return false;
+        }
+        left+=1;
+        right-=1;
+    }
+    true
+}
+
 struct Solution{}
 
 impl Solution {
@@ -90,8 +101,48 @@ impl Solution {
         dp[m-1][n-1]
     }
 
-    pub fn longest_palindrome(s: String) -> String {
-        "s".to_string()
+    pub fn longest_palindrome_1(s: String) -> String {
+        let len = s.len();
+        if len < 2 {return s;}
+        let mut maxlen = 1;
+        let mut begin = 0;
+        // 枚举所有长度大于 1 的子串
+        for i in 0..(len-1) {
+            for j in (i+1)..len {
+                if (j-i+1)>maxlen && valid_palindromic(s.clone(), i, j) {
+                    maxlen = j-i+1;
+                    begin = i;
+                }
+            }
+        }
+        s[begin..begin+maxlen].to_string()
+    }
+
+    pub fn longest_palindrome_2(s: String) -> String {
+        // 状态转移方程 dp[i][j] = (s[i] == s[j]) and dp[i + 1][j - 1]
+        if s.len() == 0 {return "".to_string();}
+        if s.len() == 1 {return s;}
+        let mut res = &s[..1];
+        let mut dp = vec![vec![false; s.len()]; s.len()];
+        for i in 1..s.len() {
+            for j in 0..i {
+                if &s[i..i+1] != &s[j..j+1] {
+                    dp[j][i] = false;
+                } else {
+                    if i - j < 3 {
+                        dp[j][i] = true;
+                    } else {
+                        dp[j][i] = dp[j+1][i-1]
+                    }
+                }
+                // 只要 dp[i][j] == true 成立，就表示子串 s[i..j] 是回文
+                if dp[j][i] && i-j+1 > res.len() {
+                    res = &s[j..=i]
+                }
+            }
+        }
+        println!("{:?}", res);
+        res.to_string()
     }
 }
 
