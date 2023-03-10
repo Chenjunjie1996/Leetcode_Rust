@@ -213,6 +213,104 @@ impl Solution {
         dp[m-1][n-1]
     }
 
+    fn num_squares(n: i32) -> i32 {
+        // 完全平方数
+        // 输入 12 12=4+4+4
+        // 输出 3
+        let nusize = n as usize;
+        let mut dp = vec![0; nusize+1];
+        for i in 1..=nusize {
+            dp[i] = i;
+            let mut j = 1;
+            while i >= j*j {
+                // 找到相差一个完全平方数的最小结果+1
+                dp[i] = min(dp[i], dp[i - j * j] + 1);
+                j += 1;
+            }
+        }
+        dp[nusize] as i32
+    }
+
+    fn can_jump(nums: Vec<i32>) -> bool {
+        // 跳跃游戏
+        let n = nums.len();
+        let mut dp = vec![false; n];
+        dp[0] = true;
+        for i in 1..n {
+            for j in 0..i {
+                if dp[j] && nums[j] >= (i-j) as i32 {
+                    dp[i] = true;
+                } else {
+                    dp[i] = false;
+                }
+                if dp[i] {
+                    break;
+                }
+            }
+        }
+        dp[n-1]
+    }
+
+    fn can_jump2(nums: Vec<i32>) -> i32 {
+        let n = nums.len();
+        let mut dp = vec![i32::MAX; n]; // 跳到 i 的最小步数
+        dp[0] = 0;
+        for i in 1..n {
+            for j in 0..i {
+                if nums[j] >= (i-j) as i32 {
+                    dp[i] = min(dp[i], dp[j]+1)
+                }
+            }
+        }
+        dp[n-1]
+    }
+
+    fn number_of_arithmetic_slices(nums: Vec<i32>) -> i32 {
+        // 输入：nums = [1,2,3,4]
+        // 输出：3
+        // 解释：nums 中有三个子等差数组：[1, 2, 3]、[2, 3, 4] 和 [1,2,3,4] 自身。
+        let n = nums.len();
+        let mut dp = vec![false; n];
+        let mut res = 0;
+        for i in 0..n {
+            for j in (i+1)..n {
+                if j-i <= 1 {
+                    dp[j] = true;
+                    continue;
+                }
+                if dp[j-1] && nums[j]-nums[j-1] == nums[j-1]-nums[j-2] {
+                    dp[j] = true;
+                } else {
+                    dp[j] = false;
+                }
+                if dp[j] && j >= 2 {
+                    res += 1;
+                }
+            }
+        }
+        res
+    }
+
+    fn max_square(matrix: Vec<Vec<char>>) -> i32 {
+        let m = matrix.len();
+        let n = matrix[0].len();
+        let mut dp = vec![vec![0;n];m];
+        let mut ans = 0;
+        for i in 0..m {
+            for j in 0..n {
+                if matrix[i][j] == '1' {
+                    if i==0 || j==0 {
+                        dp[i][j] = 1
+                    } else {
+                        dp[i][j] = dp[i-1][j].min(dp[i][j-1]).min(dp[i-1][j-1]) + 1;
+                    }
+                    ans = ans.max(dp[i][j]);
+                }
+            }
+        }
+        ans*ans
+    }
+
 }
 
 struct NumMatrix {
