@@ -52,6 +52,38 @@ impl Solution {
         }
         ans
     }
+
+    pub fn find_unsorted_subarray(nums: Vec<i32>) -> i32 {
+        /*
+        输入：nums = [2,6,4,8,10,9,15]
+        输出：5
+        解释：只需要对 [6, 4, 8, 10, 9] 进行升序排序，那么整个表都会变为升序排序。
+        数组分为3段，左右为升序，找中段的左右边界 中段最小值大于左段的最大值，最大值小于右段的最小值。
+        */
+        let n = nums.len();
+        let (mut begin, mut end) = (-1, -1);
+        let (mut min, mut max) = (i32::MIN, i32::MAX);
+
+        for i in 0..n {
+            if max > nums[i] { //从左到右维持最大值，寻找右边界end
+                end = i as i32;
+            } else {
+                max = nums[i];
+            }
+
+            if min < nums[n-i-1] { //从右到左维持最小值，寻找左边界begin
+                begin = n as i32 - i as i32 - 1;
+            } else {
+                min = nums[n-i-1];
+            }
+        }
+
+        if end == -1 {
+            0
+        } else {
+            end - begin + 1
+        }
+    }
 }
 
 
