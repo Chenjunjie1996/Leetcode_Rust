@@ -84,6 +84,27 @@ impl Solution {
             end - begin + 1
         }
     }
+
+    pub fn add_strings(num1: String, num2: String) -> String {
+        let (mut i, mut j) = (num1.len(), num2.len());
+        let mut res = vec![];
+        let mut carry = 0;
+
+        while i>0 || j>0 {
+            let n1 = {if i>0 {num1.as_bytes()[i-1] - '0' as u8} else {0}};
+            let n2 = {if j>0 {num2.as_bytes()[j-1] - '0' as u8} else {0}};
+            let tmp = n1 + n2 + carry;
+            carry = tmp/10;
+            res.push(tmp%10 + '0' as u8);
+            i -= 1;
+            j -= 1;
+        }
+        if carry == 1 {
+            res.push('1' as u8);
+        }
+        res.reverse();
+        String::from_utf8(res).unwrap()
+    }
 }
 
 
@@ -97,5 +118,8 @@ mod tests {
     fn it_works() {
         let result = add(2, 2);
         assert_eq!(result, 4);
-    }
+
+        let result = Solution::add_strings("123".to_string(), "456".to_string());
+        assert_eq!(result ,"579".to_string());
+    }        
 }
